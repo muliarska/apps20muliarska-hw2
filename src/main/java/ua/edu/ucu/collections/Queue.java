@@ -1,6 +1,5 @@
 package ua.edu.ucu.collections;
 
-import ua.edu.ucu.collections.immutable.Node;
 import ua.edu.ucu.collections.immutable.ImmutableLinkedList;
 
 public class Queue {
@@ -19,9 +18,9 @@ public class Queue {
     }
 
     public Object dequeue() {
-        Node temp = this.data.getHead();
+        Object temp = this.peek();
         this.data = this.data.removeFirst();
-        return temp.data;
+        return temp;
     }
 
     public void enqueue(Object e) {

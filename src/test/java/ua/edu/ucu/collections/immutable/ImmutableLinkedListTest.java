@@ -155,8 +155,8 @@ public class ImmutableLinkedListTest {
 
     @Test
     public void testNode() {
-        assertEquals(testList.getHead().data, 1);
-        assertEquals(testList.getHead().next.data, 2);
-        assertEquals(testList.getTail().next, null);
+        assertEquals(testList.getHead().getData(), 1);
+        assertEquals(testList.getHead().getNext().getData(), 2);
+        assertEquals(testList.getTail().getNext(), null);
     }
 }

@@ -5,6 +5,24 @@ public class ImmutableLinkedList implements ImmutableList {
     private Node head;
     private Node tail;
 
+    public static class Node {
+        private Object data;
+        private Node next;
+
+        public Node(Object data) {
+            this.data = data;
+            this.next = null;
+        }
+
+        public Object getData() {
+            return data;
+        }
+
+        public Node getNext() {
+            return next;
+        }
+    }
+
     public ImmutableLinkedList(Object [] data) {
         if (data == null) {
             this.head = null;
