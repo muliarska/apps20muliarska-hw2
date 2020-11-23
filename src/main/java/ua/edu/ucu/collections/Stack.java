@@ -15,9 +15,9 @@ public class Stack {
     }
 
     Object pop() {
-        Node temp = this.data.head;
+        Object temp = this.peek();
         this.data = this.data.removeLast();
-        return temp.data;
+        return temp;
     }
 
     void push(Object e) {

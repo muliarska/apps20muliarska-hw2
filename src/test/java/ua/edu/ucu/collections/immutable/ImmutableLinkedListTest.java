@@ -33,6 +33,10 @@ public class ImmutableLinkedListTest {
         Object[] expListAddWithIndex = {1, 2, 3, 0, 4, 5};
         assertArrayEquals(listAddWithIndex.toArray(), expListAddWithIndex);
 
+        ImmutableList listAddWithIndexZero = testList.add(0, 0);
+        Object[] expListAddWithIndexZero = {0, 1, 2, 3, 4, 5};
+        assertArrayEquals(listAddWithIndexZero.toArray(), expListAddWithIndexZero);
+
     }
 
 
@@ -48,6 +52,9 @@ public class ImmutableLinkedListTest {
         Object[] expListAddAllWithIndex = {1, 2, 6, 7, 8, 3, 4, 5};
         assertArrayEquals(listAddAllWithIndex.toArray(), expListAddAllWithIndex);
 
+        ImmutableList listAddAllFirst = testList.addAll(0, listToAdd);
+        Object[] expListAddAllFirst = {6, 7, 8, 1, 2, 3, 4, 5};
+        assertArrayEquals(listAddAllFirst.toArray(), expListAddAllFirst);
     }
 
     @Test
@@ -81,6 +88,14 @@ public class ImmutableLinkedListTest {
         ImmutableList listSet = testList.set(1, 10);
         Object[] expListSet = {1, 10, 3, 4, 5};
         assertArrayEquals(listSet.toArray(), expListSet);
+
+        ImmutableList listSetFirst = testList.set(0, 10);
+        Object[] expListSetFirst = {10, 2, 3, 4, 5};
+        assertArrayEquals(listSetFirst.toArray(), expListSetFirst);
+
+        ImmutableList listSetLast = testList.set(4, 10);
+        Object[] expListSetLast = {1, 2, 3, 4, 10};
+        assertArrayEquals(listSetLast.toArray(), expListSetLast);
     }
 
     @Test(expected = IndexOutOfBoundsException.class)
@@ -90,7 +105,7 @@ public class ImmutableLinkedListTest {
         Object[] listToAdd = {6, 7, 8};
         testList.addAll(-3, listToAdd);
 
-        testList.get(7);
+        testList.get(10);
 
         testList.remove(7);
 
@@ -136,5 +151,12 @@ public class ImmutableLinkedListTest {
         assertEquals(testList.toString(),
                 "ImmutableLinkedList{ 1 2 3 4 5 }");
 
+    }
+
+    @Test
+    public void testNode() {
+        assertEquals(testList.head.data, 1);
+        assertEquals(testList.head.next.data, 2);
+        assertEquals(testList.tail.next, null);
     }
 }

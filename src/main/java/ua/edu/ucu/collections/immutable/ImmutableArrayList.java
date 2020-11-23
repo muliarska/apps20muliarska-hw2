@@ -10,33 +10,46 @@ public class ImmutableArrayList implements ImmutableList {
     private int buffer;
 
     public ImmutableArrayList(Object [] data) {
-        this.data = data;
-        this.size = this.data.length;
-        this.buffer = this.data.length;
+        if (data == null) {
+            this.data = null;
+            this.size = 0;
+            this.buffer = 0;
+        }
+        else {
+            this.data = data;
+            this.size = this.data.length;
+            this.buffer = this.data.length;
+        }
     }
 
     private ImmutableArrayList copyAndIncreaseBuffer() {
-        ImmutableArrayList newData = new ImmutableArrayList(null);
+        int len;
+
         if (this.buffer == this.size) {
-            System.arraycopy(this.data, 0, newData.data, 0, this.data.length * 2);
-            newData.buffer = this.buffer * 2;
+            len = this.data.length * 2;
         }
         else {
-            System.arraycopy(this.data, 0, newData.data, 0, this.data.length);
-            newData.buffer = this.buffer;
+            len = this.data.length;
         }
 
+        Object[] newArray = new Object[len];
+        ImmutableArrayList newData = new ImmutableArrayList(newArray);
+        System.arraycopy(this.data, 0, newData.data, 0, this.size);
+
+        newData.buffer = len;
         newData.size = this.size;
+
         return newData;
     }
 
     private ImmutableArrayList increaseBufferByLen(int len) {
-        ImmutableArrayList newData = new ImmutableArrayList(null);
-        if (this.buffer < this.size + len) {
-            System.arraycopy(this.data, 0, newData.data, 0, this.data.length + len);
-            newData.buffer = this.buffer + len;
-            newData.size = this.size;
-        }
+        Object[] newArray = new Object[this.size + len];
+        ImmutableArrayList newData = new ImmutableArrayList(newArray);
+        System.arraycopy(this.data, 0, newData.data, 0, this.size);
+
+        newData.buffer = this.size + len;
+        newData.size = this.size;
+
         return newData;
     }
 
@@ -48,7 +61,7 @@ public class ImmutableArrayList implements ImmutableList {
     public ImmutableList add(Object e) {
         ImmutableArrayList newList = copyAndIncreaseBuffer();
         newList.data[this.size] = e;
-        this.size++;
+        newList.size++;
         return newList;
     }
 
@@ -57,9 +70,13 @@ public class ImmutableArrayList implements ImmutableList {
             throw new IndexOutOfBoundsException();
         }
 
-        ImmutableArrayList newList = increaseBufferByLen(shift);
+        ImmutableArrayList newList = copyAndIncreaseBuffer();
+        if (shift < 0) {
+            index++;
+        }
+
         for (int i = index; i < newList.size; i++) {
-            newList.data[i+shift] = newList.data[i];
+            newList.data[i+shift] = this.data[i];
         }
         return newList;
     }
@@ -72,6 +89,7 @@ public class ImmutableArrayList implements ImmutableList {
 
         ImmutableArrayList newList = shiftElements(index, 1);
         newList.data[index] = e;
+        newList.size++;
         return newList;
     }
 
@@ -81,6 +99,7 @@ public class ImmutableArrayList implements ImmutableList {
         for (int i = 0; i < c.length; i++) {
             newList.data[i+newList.size] = c[i];
         }
+        newList.size += c.length;
         return newList;
     }
 
@@ -94,6 +113,7 @@ public class ImmutableArrayList implements ImmutableList {
         for (int i = 0; i < c.length; i++) {
             newList.data[i+index] = c[i];
         }
+        newList.size += c.length;
         return newList;
     }
 
@@ -147,25 +167,30 @@ public class ImmutableArrayList implements ImmutableList {
     public ImmutableList clear() {
         ImmutableArrayList newList = copyAndIncreaseBuffer();
         newList.data = null;
+        newList.size = 0;
+        newList.buffer = 0;
         return newList;
     }
 
     @Override
     public boolean isEmpty() {
-        return this.size > 0;
+        return this.size == 0;
     }
 
     @Override
     public Object[] toArray() {
-        return this.data;
+        Object[] array = new Object[this.size];
+        for (int i = 0; i < this.size; i++) {
+            array[i] = this.data[i];
+        }
+        return array;
     }
 
     @Override
     public String toString() {
         return "ImmutableArrayList{" +
-                "data=" + Arrays.toString(data) +
-                ", size=" + size +
-                ", buffer=" + buffer +
+                "data=" + Arrays.toString(this.toArray()) +
+                ", size=" + this.size +
                 '}';
     }
 }

@@ -28,6 +28,10 @@ public class ImmutableLinkedList implements ImmutableList{
     }
 
     private ImmutableLinkedList copy() {
+        if (this.size() == 0) {
+            return new ImmutableLinkedList(null);
+        }
+
         Object[] newArray = new Object[this.size()];
         System.arraycopy(this.toArray(), 0, newArray, 0, this.size());
         ImmutableLinkedList newList = new ImmutableLinkedList(newArray);
@@ -106,26 +110,22 @@ public class ImmutableLinkedList implements ImmutableList{
         if (index == 0) {
             Node temp = newList.head;
             newList.head = tempList.head;
-            tempList.tail = temp;
+            tempList.tail.next = temp;
+            return newList;
         }
 
         Node currNode = newList.head;
         int counter = 1;
 
-        while (currNode != newList.tail) {
+        while (currNode != null) {
             if (counter == index) {
                 Node temp = currNode.next;
                 currNode.next = tempList.head;
                 tempList.tail.next = temp;
-                break;
+                return newList;
             }
             counter++;
             currNode = currNode.next;
-        }
-
-        if (counter - 1 == index) {
-            newList.tail.next = tempList.head;
-            newList.tail = tempList.tail;
         }
 
         return newList;
@@ -160,12 +160,13 @@ public class ImmutableLinkedList implements ImmutableList{
 
         if (index == 0) {
             newList.head = newList.head.next;
+            return newList;
         }
 
         Node currNode = newList.head;
         int counter = 1;
 
-        while (currNode.next != newList.tail) {
+        while (currNode.next != null) {
             if (counter == index) {
                 Node temp = currNode.next;
                 currNode.next = temp.next;
@@ -236,14 +237,15 @@ public class ImmutableLinkedList implements ImmutableList{
 
     @Override
     public int size() {
-        Node currNode = this.head;
-        int counter = 1;
-
-        if (currNode == null) {
+        if (this.isEmpty()) {
             return 0;
         }
 
-        while (currNode != this.tail) {
+        Node currNode = this.head;
+        int counter = 0;
+
+
+        while (currNode != null) {
             counter++;
             currNode = currNode.next;
         }
@@ -301,9 +303,15 @@ public class ImmutableLinkedList implements ImmutableList{
 
     public ImmutableLinkedList addLast(Object e) {
         ImmutableLinkedList newList = copy();
+
+        if (newList.size() == 0) {
+            newList.head = new Node(e);
+            return newList;
+        }
+
         Node currNode = newList.head;
 
-        while (currNode != newList.tail) {
+        while (currNode.next != null) {
             currNode = currNode.next;
         }
 
