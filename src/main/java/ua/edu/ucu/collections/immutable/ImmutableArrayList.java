@@ -1,7 +1,6 @@
 package ua.edu.ucu.collections.immutable;
 
 import java.util.Arrays;
-import java.util.concurrent.TransferQueue;
 
 public class ImmutableArrayList implements ImmutableList {
 //    System.arraycopy
@@ -16,7 +15,7 @@ public class ImmutableArrayList implements ImmutableList {
             this.buffer = 0;
         }
         else {
-            this.data = data;
+            this.data = data.clone();
             this.size = this.data.length;
             this.buffer = this.data.length;
         }
@@ -53,8 +52,10 @@ public class ImmutableArrayList implements ImmutableList {
         return newData;
     }
 
-    private boolean isValidIndex(int index) {
-        return (index >= 0) && (index < this.size);
+    private void isValidIndex(int index) {
+        if ((index < 0) || (index >= this.size)) {
+            throw new IndexOutOfBoundsException();
+        }
     }
 
     @Override
@@ -66,16 +67,15 @@ public class ImmutableArrayList implements ImmutableList {
     }
 
     private ImmutableArrayList shiftElements(int index, int shift) {
-        if (!isValidIndex(index)) {
-            throw new IndexOutOfBoundsException();
-        }
+        isValidIndex(index);
 
+        int newIndex = index;
         ImmutableArrayList newList = copyAndIncreaseBuffer();
         if (shift < 0) {
-            index++;
+            newIndex = index + 1;
         }
 
-        for (int i = index; i < newList.size; i++) {
+        for (int i = newIndex; i < newList.size; i++) {
             newList.data[i+shift] = this.data[i];
         }
         return newList;
@@ -83,9 +83,7 @@ public class ImmutableArrayList implements ImmutableList {
 
     @Override
     public ImmutableList add(int index, Object e) {
-        if (!isValidIndex(index)) {
-            throw new IndexOutOfBoundsException();
-        }
+        isValidIndex(index);
 
         ImmutableArrayList newList = shiftElements(index, 1);
         newList.data[index] = e;
@@ -105,9 +103,7 @@ public class ImmutableArrayList implements ImmutableList {
 
     @Override
     public ImmutableList addAll(int index, Object[] c) {
-        if (!isValidIndex(index)) {
-            throw new IndexOutOfBoundsException();
-        }
+        isValidIndex(index);
 
         ImmutableArrayList newList = shiftElements(index, c.length);
         for (int i = 0; i < c.length; i++) {
@@ -119,18 +115,14 @@ public class ImmutableArrayList implements ImmutableList {
 
     @Override
     public Object get(int index) {
-        if (!isValidIndex(index)) {
-            throw new IndexOutOfBoundsException();
-        }
+        isValidIndex(index);
 
         return this.data[index];
     }
 
     @Override
     public ImmutableList remove(int index) {
-        if (!isValidIndex(index)) {
-            throw new IndexOutOfBoundsException();
-        }
+        isValidIndex(index);
 
         ImmutableArrayList newList = shiftElements(index, -1);
         newList.size -= 1;
@@ -139,9 +131,7 @@ public class ImmutableArrayList implements ImmutableList {
 
     @Override
     public ImmutableList set(int index, Object e) {
-        if (!isValidIndex(index)) {
-            throw new IndexOutOfBoundsException();
-        }
+        isValidIndex(index);
 
         ImmutableArrayList newList = copyAndIncreaseBuffer();
         newList.data[index] = e;
@@ -151,7 +141,7 @@ public class ImmutableArrayList implements ImmutableList {
     @Override
     public int indexOf(Object e) {
         for (int i = 0; i < this.size; i++) {
-            if(this.data[i] == e) {
+            if (this.data[i] == e) {
                 return i;
             }
         }
@@ -188,9 +178,9 @@ public class ImmutableArrayList implements ImmutableList {
 
     @Override
     public String toString() {
-        return "ImmutableArrayList{" +
-                "data=" + Arrays.toString(this.toArray()) +
-                ", size=" + this.size +
-                '}';
+        return "ImmutableArrayList{"
+                + "data=" + Arrays.toString(this.toArray())
+                + ", size=" + this.size
+                + '}';
     }
 }

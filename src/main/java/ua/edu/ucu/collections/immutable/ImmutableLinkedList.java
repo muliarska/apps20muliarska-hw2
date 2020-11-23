@@ -1,9 +1,9 @@
 package ua.edu.ucu.collections.immutable;
 
 
-public class ImmutableLinkedList implements ImmutableList{
-    public Node head;
-    public Node tail;
+public class ImmutableLinkedList implements ImmutableList {
+    private Node head;
+    private Node tail;
 
     public ImmutableLinkedList(Object [] data) {
         if (data == null) {
@@ -23,8 +23,18 @@ public class ImmutableLinkedList implements ImmutableList{
         }
     }
 
-    private boolean isValidIndex(int index) {
-        return (index >= 0) && (index < this.size());
+    public Node getHead() {
+        return head;
+    }
+
+    public Node getTail() {
+        return tail;
+    }
+
+    private void isValidIndex(int index) {
+        if ((index < 0) || (index >= this.size())) {
+            throw new IndexOutOfBoundsException();
+        }
     }
 
     private ImmutableLinkedList copy() {
@@ -54,9 +64,7 @@ public class ImmutableLinkedList implements ImmutableList{
 
     @Override
     public ImmutableList add(int index, Object e) {
-        if (!isValidIndex(index)) {
-            throw new IndexOutOfBoundsException();
-        }
+        isValidIndex(index);
 
         ImmutableLinkedList newList = copy();
 
@@ -100,9 +108,7 @@ public class ImmutableLinkedList implements ImmutableList{
 
     @Override
     public ImmutableList addAll(int index, Object[] c) {
-        if (!isValidIndex(index)) {
-            throw new IndexOutOfBoundsException();
-        }
+        isValidIndex(index);
 
         ImmutableLinkedList newList = copy();
         ImmutableLinkedList tempList = new ImmutableLinkedList(c);
@@ -133,9 +139,7 @@ public class ImmutableLinkedList implements ImmutableList{
 
     @Override
     public Object get(int index) {
-        if (!isValidIndex(index)) {
-            throw new IndexOutOfBoundsException();
-        }
+        isValidIndex(index);
 
         int counter = 0;
         Node currNode = this.head;
@@ -152,9 +156,7 @@ public class ImmutableLinkedList implements ImmutableList{
 
     @Override
     public ImmutableList remove(int index) {
-        if (!isValidIndex(index)) {
-            throw new IndexOutOfBoundsException();
-        }
+        isValidIndex(index);
 
         ImmutableLinkedList newList = copy();
 
@@ -185,9 +187,7 @@ public class ImmutableLinkedList implements ImmutableList{
 
     @Override
     public ImmutableList set(int index, Object e) {
-        if (!isValidIndex(index)) {
-            throw new IndexOutOfBoundsException();
-        }
+        isValidIndex(index);
 
         ImmutableLinkedList newList = copy();
 
@@ -286,15 +286,18 @@ public class ImmutableLinkedList implements ImmutableList{
 
     @Override
     public String toString() {
-        String result = new String("ImmutableLinkedList{");
-
         Node currNode = this.head;
+
+        StringBuilder builder = new StringBuilder();
+        builder.append("ImmutableLinkedList{");
+
         for (int i = 0; i < this.size(); i++) {
-            result += " " + currNode.data;
+            builder.append(" " + currNode.data);
             currNode = currNode.next;
         }
+        builder.append(" }");
 
-        return result + " }";
+        return builder.toString();
     }
 
     public ImmutableLinkedList addFirst(Object e) {
@@ -333,7 +336,7 @@ public class ImmutableLinkedList implements ImmutableList{
         return (ImmutableLinkedList) this.remove(0);
     }
 
-    public ImmutableLinkedList removeLast(){
+    public ImmutableLinkedList removeLast() {
         return (ImmutableLinkedList) this.remove(this.size() - 1);
     }
 }

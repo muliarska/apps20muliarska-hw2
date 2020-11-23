@@ -1,13 +1,16 @@
 package ua.edu.ucu.collections;
 
 import ua.edu.ucu.collections.immutable.ImmutableLinkedList;
-import ua.edu.ucu.collections.immutable.Node;
 
 public class Stack {
-    ImmutableLinkedList data;
+    private ImmutableLinkedList data;
 
     public Stack() {
         this.data = new ImmutableLinkedList(null);
+    }
+
+    public ImmutableLinkedList getData() {
+        return data;
     }
 
     Object peek() {

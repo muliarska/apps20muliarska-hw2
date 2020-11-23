@@ -4,10 +4,14 @@ import ua.edu.ucu.collections.immutable.Node;
 import ua.edu.ucu.collections.immutable.ImmutableLinkedList;
 
 public class Queue {
-    ImmutableLinkedList data;
+    private ImmutableLinkedList data;
 
     public Queue() {
         this.data = new ImmutableLinkedList(null);
+    }
+
+    public ImmutableLinkedList getData() {
+        return data;
     }
 
     public Object peek() {
@@ -15,7 +19,7 @@ public class Queue {
     }
 
     public Object dequeue() {
-        Node temp = this.data.head;
+        Node temp = this.data.getHead();
         this.data = this.data.removeFirst();
         return temp.data;
     }
